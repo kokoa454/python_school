@@ -9,7 +9,7 @@ def printLabel(name, padding):
     sentence = "Hello! " + name
     height = padding * 2 + 1 + 2 #paddingと文章行分とアスタリスク行分
     width = padding * 2 + len(sentence) + 2 #paddingと文章の文字分とアスタリスク分
-    sentence_point = (height)  // 2
+    sentence_point = (height)  // 2 #文章行の位置を決める
     
     for i in range(height):
         if(i == 0 or i == height - 1):
