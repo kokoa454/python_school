@@ -19,7 +19,6 @@ def printLabel(name, padding):
         else:  
             printSpaceLine(width - 2)
     
-
 def printAsteriskLine(cnt):
     while(cnt > 0):
         print("*", end="")
