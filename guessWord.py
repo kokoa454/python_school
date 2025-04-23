@@ -48,12 +48,12 @@ def main():
     wordStringForQuestion = makeWordStringForQuestion(word, wordLength)
     
     while(trialLimit):
-        guessedWord = input(f'{''.join(wordStringForQuestion)}:')
+        guessedAlphabet = input(f'{''.join(wordStringForQuestion)}:')
         
-        # wordの中身とguessedWordを比較して、正解だったらwordStringForQuestionに反映
+        # wordの中身とguessedAlphabetを比較して、正解だったらwordStringForQuestionに反映
         for index, item in enumerate(word): 
-            if(item == guessedWord):
-                wordStringForQuestion[index] = guessedWord
+            if(item == guessedAlphabet):
+                wordStringForQuestion[index] = guessedAlphabet
             
         # '_'がwordStringForQuestionに存在しない = すべてのアルファベットが正解ならプログラムを終了させる
         if('_' not in wordStringForQuestion):
