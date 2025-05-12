@@ -30,8 +30,8 @@ V2=np.array([[1,0.01],[0.01,1]])
 class2=np.random.multivariate_normal(mu2,V2,size=30) 
 
 #scatter plot coontrol
-plt.scatter(class1[:, 0], class1[:, 1], label='Class1', c='red', marker="*")
-plt.scatter(class2[:, 0], class2[:, 1], label='Class2', c='blue', marker="o")
+plt.scatter(class1[:, 0], class1[:, 1], label='Class1', c='red', marker="*", alpha=0.4, s=150)
+plt.scatter(class2[:, 0], class2[:, 1], label='Class2', c='blue', marker="o", alpha=0.4, s=150)
 ax = plt.gca()
 ax.yaxis.set_major_locator(MultipleLocator(0.5))
 plt.xlabel('x1')
