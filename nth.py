@@ -7,7 +7,7 @@ Created on Tue Apr 22 14:34:43 2025
 def nth(lst, n):
     dt = lst.copy()
 
-    for i in range(len(dt)):
+    for i in range(n):
         for j in range(i + 1, len(dt)):
             if dt[i] < dt[j]:
                 dt[i], dt[j] = dt[j], dt[i]
@@ -15,7 +15,7 @@ def nth(lst, n):
     return dt[n - 1]
 
 def nthWithoutCopy(lst, n):
-    for i in range(len(lst)):
+    for i in range(n):
         for j in range(i + 1, len(lst)):
             if lst[i] < lst[j]:
                 lst[i], lst[j] = lst[j], lst[i]
