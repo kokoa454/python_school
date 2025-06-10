@@ -13,4 +13,4 @@ except Exception as e:
     print(e)
 
 # 問1 sepal length(cm), sepal width(cm), petal length(cm), petal width(cm)
-# 問2 596個
+# 問2 600個
