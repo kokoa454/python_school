@@ -62,29 +62,17 @@ def outputDataFrame(rows):
         print("pandas error")
         print(e)
 
-def outputGraph(df):
+def outputCSV(df):
     try:
-        # 初年度と最終年度をDataFrameから取得
-        firstYear = df["西暦"][0] 
-        lastYear = df["西暦"].iloc[-1] 
-        # 月を年・月・1日として日付型に変換
-        measuredMonth = [date(y, m, 1) for y in range(firstYear, lastYear + 1) for m in range(1, 13)]
-        # 各月のCO2データをリストとして格納
-        # 例: df.loc[df["西暦"] == 2010, "1月"], その際、df[f"{m}月"]だとm月列すべてのデータを取得してしまうため間違い
-        measuredData = [df.loc[df["西暦"] == y, f"{m}月"] for y in range(firstYear, lastYear + 1) for m in range(1, 13)]
-
-        # matplotlibを使ってグラフを描画
-        plt.plot(measuredMonth, measuredData)
-        plt.show()
-
-
+        # DataFrameをCSVファイルに出力
+        df.to_csv("co2_data.csv", index=False, encoding="utf_8_sig")
     except Exception as e:
-        print("matplotlib error")
+        print("CSV output error")
         print(e)
 
 def main():
     rows = getCo2Data()
     df = outputDataFrame(rows)
-    outputGraph(df)
+    outputCSV(df)
 
 main()
