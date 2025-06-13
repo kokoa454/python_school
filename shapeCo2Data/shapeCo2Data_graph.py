@@ -74,6 +74,7 @@ def outputGraph(df, placeName, firstUnregisteredYear):
     try:
         # matplotlibのフォント設定
         fp = FontProperties(fname=r'C:\WINDOWS\Fonts\meiryob.ttc', size=16)
+        # matplotlibのグラフ設定
         lineWidth = 2
 
         # 初年度と最終年度をDataFrameから取得
@@ -111,11 +112,15 @@ def outputGraph(df, placeName, firstUnregisteredYear):
 
             # 未確定データのデータをmatplotlibに追加
             plt.plot(unregisteredMonth, unregisteredData, label = "unregistered data", color = "red", linewidth = lineWidth)
-
+        
+        # 確定データのデータをmatplotlibに追加
         plt.plot(measuredMonth, measuredData, label = "registered data", color = "green", linewidth = lineWidth)
+        
+        # 2つのデータリストをつながっているようにするため、最後の確定データと最初の未確定データをつなぐ線を引く
         x_pair = [measuredMonth[-1], unregisteredMonth[0]]
         y_pair = [measuredData[-1], unregisteredData[0]]
         plt.plot(x_pair, y_pair, color = "red", linewidth = lineWidth)
+
         plt.title("大気中二酸化炭素濃度(at " + placeName + ")", fontproperties=fp)
         plt.xlabel("year")
         plt.ylabel("CO2 (ppm)")
