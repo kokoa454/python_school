@@ -28,9 +28,12 @@ def outputDataFrame(rows):
         columns = [row.text for row in rows[0].findAll("td")]
         placeName = columns[0]
         columns[0] = "西暦"
-
+        
         # 列名データをpandas.DataFrameに格納
         df = pd.DataFrame(columns=columns)
+
+        # 最初の未確定データの年を格納する変数
+        firstUnregisteredYear = None
 
         # 列名以外のデータをpandas.DataFrameに格納
         for i in range(1, len(rows)):
@@ -48,6 +51,9 @@ def outputDataFrame(rows):
                 elif rowContents[j].find("(") != -1 and rowContents[j].find(")") != -1:
                     rowContents[j] = rowContents[j].replace("(", "").replace(")", "")
                     rowContents[j] = float(rowContents[j])
+                    # 最初の未確定データの年を取得
+                    if firstUnregisteredYear is None:
+                        firstUnregisteredYear = rowContents[0]
                 # 通常数値の場合はfloat型に変換
                 else:
                     rowContents[j] = float(rowContents[j])
@@ -58,42 +64,60 @@ def outputDataFrame(rows):
 
         print(df)
 
-        return df, placeName
+        return df, placeName, firstUnregisteredYear
 
     except Exception as e:
         print("pandas error")
         print(e)
 
-def outputGraph(df, placeName):
+def outputGraph(df, placeName, firstUnregisteredYear):
     try:
+        # matplotlibのフォント設定
+        fp = FontProperties(fname=r'C:\WINDOWS\Fonts\meiryob.ttc', size=16)
+
         # 初年度と最終年度をDataFrameから取得
         firstYear = df["西暦"][0] 
         lastYear = df["西暦"].iloc[-1] 
-        # 月を年・月・1日として日付型に変換
+
+        # 月を年・月・1日として日付型に変換(未確定データ年以外)
         measuredMonth = [
-            date(y, m, 1)
-            for y in range(firstYear, lastYear + 1)
-            for m in range(1, 13)
+                date(y, m, 1)
+                for y in range(firstYear, firstUnregisteredYear if firstUnregisteredYear is not None else lastYear + 1)
+                for m in range(1, 13)
         ]
+        
         # 各月のCO2データをリストとして格納
         # 例: df.loc[df["西暦"] == 2010, "1月"], その際、df[f"{m}月"]だとm月列すべてのデータを取得してしまうため間違い
         measuredData = [
             df.loc[df["西暦"] == y,
             f"{m}月"]
-            for y in range(firstYear, lastYear + 1)
+            for y in range(firstYear, firstUnregisteredYear if firstUnregisteredYear is not None else lastYear + 1)
             for m in range(1, 13)
         ]
 
-        # matplotlibのフォント設定
-        fp = FontProperties(fname=r'C:\WINDOWS\Fonts\meiryob.ttc', size=16)
+        # 未確定データがあれば、未確定データの年以降の月を年・月・1日として日付型に変換
+        if firstUnregisteredYear is not None:
+            unconfirmedMonth = [
+                date(y, m, 1)
+                for y in range(firstUnregisteredYear, lastYear + 1)
+                for m in range(1, 13)
+            ]
 
-        # matplotlibを使ってグラフを描画
-        plt.plot(measuredMonth, measuredData)
+            unconfirmedData = [
+                df.loc[df["西暦"] == y,
+                f"{m}月"]
+                for y in range(firstUnregisteredYear, lastYear + 1)
+                for m in range(1, 13)
+            ]
+
+            # 未確定データのデータをmatplotlibに追加
+            plt.plot(unconfirmedMonth, unconfirmedData, label = "unregistered data", color = "red")
+
+        plt.plot(measuredMonth, measuredData, label = "registered data", color = "green")
         plt.title("大気中二酸化炭素濃度(at " + placeName + ")", fontproperties=fp)
         plt.xlabel("year")
         plt.ylabel("CO2 (ppm)")
         plt.show()
-
 
     except Exception as e:
         print("matplotlib error")
@@ -101,7 +125,6 @@ def outputGraph(df, placeName):
 
 def main():
     rows = getCo2Data()
-    df, placeName = outputDataFrame(rows)
-    outputGraph(df, placeName)
-
+    df, placeName, firstUnregisteredYear = outputDataFrame(rows)
+    outputGraph(df, placeName, firstUnregisteredYear)
 main()
