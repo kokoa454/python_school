@@ -74,6 +74,7 @@ def outputGraph(df, placeName, firstUnregisteredYear):
     try:
         # matplotlibのフォント設定
         fp = FontProperties(fname=r'C:\WINDOWS\Fonts\meiryob.ttc', size=16)
+        lineWidth = 2
 
         # 初年度と最終年度をDataFrameから取得
         firstYear = df["西暦"][0] 
@@ -89,34 +90,36 @@ def outputGraph(df, placeName, firstUnregisteredYear):
         # 各月のCO2データをリストとして格納
         # 例: df.loc[df["西暦"] == 2010, "1月"], その際、df[f"{m}月"]だとm月列すべてのデータを取得してしまうため間違い
         measuredData = [
-            df.loc[df["西暦"] == y,
-            f"{m}月"]
+            df.loc[df["西暦"] == y,f"{m}月"].values[0] if not df.loc[df["西暦"] == y, f"{m}月"].empty else np.nan
             for y in range(firstYear, firstUnregisteredYear if firstUnregisteredYear is not None else lastYear + 1)
             for m in range(1, 13)
         ]
 
         # 未確定データがあれば、未確定データの年以降の月を年・月・1日として日付型に変換
         if firstUnregisteredYear is not None:
-            unconfirmedMonth = [
+            unregisteredMonth = [
                 date(y, m, 1)
                 for y in range(firstUnregisteredYear, lastYear + 1)
                 for m in range(1, 13)
             ]
 
-            unconfirmedData = [
-                df.loc[df["西暦"] == y,
-                f"{m}月"]
+            unregisteredData = [
+                df.loc[df["西暦"] == y,f"{m}月"].values[0] if not df.loc[df["西暦"] == y, f"{m}月"].empty else np.nan
                 for y in range(firstUnregisteredYear, lastYear + 1)
                 for m in range(1, 13)
             ]
 
             # 未確定データのデータをmatplotlibに追加
-            plt.plot(unconfirmedMonth, unconfirmedData, label = "unregistered data", color = "red")
+            plt.plot(unregisteredMonth, unregisteredData, label = "unregistered data", color = "red", linewidth = lineWidth)
 
-        plt.plot(measuredMonth, measuredData, label = "registered data", color = "green")
+        plt.plot(measuredMonth, measuredData, label = "registered data", color = "green", linewidth = lineWidth)
+        x_pair = [measuredMonth[-1], unregisteredMonth[0]]
+        y_pair = [measuredData[-1], unregisteredData[0]]
+        plt.plot(x_pair, y_pair, color = "red", linewidth = lineWidth)
         plt.title("大気中二酸化炭素濃度(at " + placeName + ")", fontproperties=fp)
         plt.xlabel("year")
         plt.ylabel("CO2 (ppm)")
+        plt.legend()
         plt.show()
 
     except Exception as e:
