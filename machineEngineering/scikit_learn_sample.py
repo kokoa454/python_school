@@ -1,0 +1,54 @@
+from sklearn import datasets
+import pandas as pd
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+iris = datasets.load_iris()
+
+# print("特徴量の名前=", iris.feature_names)
+# print("分類の名前=", iris.target_names)
+# print("分類の値=", iris.data)
+
+df = pd.DataFrame(iris.data)
+df.columns = iris.feature_names
+df["target"] = iris.target
+df0 = df[df["target"] == 0]
+df1 = df[df["target"] == 1]
+df2 = df[df["target"] == 2]
+
+# がくの幅をグラフ化
+# plt.figure(figsize=(5, 5))
+# xx = "sepal width (cm)"
+# df0[xx].hist(color="b", alpha=0.5)
+# df1[xx].hist(color="r", alpha=0.5)
+# df2[xx].hist(color="g", alpha=0.5)
+# plt.xlabel(xx)
+# plt.show()
+
+# がくの幅と花弁の長さをグラフ化
+# xx = "sepal width (cm)"
+# yy = "petal length (cm)"
+# plt.figure(figsize=(5, 5))
+# plt.scatter(df0[xx], df0[yy], color="b", alpha=0.5)
+# plt.scatter(df1[xx], df1[yy], color="r", alpha=0.5)
+# plt.scatter(df2[xx], df2[yy], color="g", alpha=0.5)
+# plt.xlabel(xx)
+# plt.ylabel(yy)
+# plt.grid()
+# plt.show()
+
+# がくの幅と長さ、花弁の長さを3Dグラフ化
+xx = "sepal width (cm)"
+yy = "sepal length (cm)"
+zz = "petal length (cm)"
+figure = plt.figure(figsize=(5, 5))
+ax = Axes3D(figure)
+figure.add_axes(ax)
+ax.scatter(df0[xx], df0[yy], df0[zz], color="b")
+ax.scatter(df1[xx], df1[yy], df1[zz], color="r")
+ax.scatter(df2[xx], df2[yy], df2[zz], color="g")
+ax.set_xlabel(xx)
+ax.set_ylabel(yy)
+ax.set_zlabel(zz)
+ax.view_init(90, 240)
+plt.show()
