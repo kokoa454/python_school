@@ -62,3 +62,107 @@ plt.scatter(df0[0], df0[1], color = "b", alpha = 0.5)
 plt.scatter(df1[0], df1[1], color = "r", alpha = 0.5)
 plt.title("test: 25%")
 plt.show()
+
+from sklearn import svm
+
+model = svm.SVC()
+model.fit(x_train, y_train)
+
+pred = model.predict(x_test)
+
+df = pd.DataFrame(x_test)
+df["target"] = pred
+
+df0 = df[df["target"] == 0]
+df1 = df[df["target"] == 1]
+
+plt.figure(figsize = (5, 5))
+plt.scatter(df0[0], df0[1], color = "b", alpha = 0.5)
+plt.scatter(df1[0], df1[1], color = "r", alpha = 0.5)
+plt.title("predict")
+plt.show()
+
+from sklearn.metrics import accuracy_score
+
+pred = model.predict(x_test)
+score = accuracy_score(y_test, pred)
+print("正解率: ", score * 100, "%")
+
+pred = model.predict([[1,3]])
+print("1, 3 = ", pred)
+
+pred = model.predict([[1, 2]])
+print("1, 2 = ", pred)
+
+plt.figure(figsize = (5, 5))
+plt.scatter(df0[0], df0[1], color = "b", alpha = 0.5)
+plt.scatter(df1[0], df1[1], color = "r", alpha = 0.5)
+plt.scatter(1, 3, color = "b", marker = "x", s = 300)
+plt.scatter(1, 2, color = "r", marker = "x", s = 300)
+plt.title("predict")
+plt.show()
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.subplots(figsize=(15, 5))
+
+sizelist = [3, 8, 100]
+
+for i in range(3):
+  size = sizelist[i]
+  X, Y = np.meshgrid(np.linspace(0, 10, size + 1), np.linspace(0, 10, size + 1))
+  C = np.linspace(0, 100, size * size).reshape(size, size)
+  plt.subplot(1, 3, i + 1)
+  plt.pcolormesh(X, Y, C, cmap = "rainbow")
+
+plt.show()
+
+from matplotlib.colors import ListedColormap
+
+def plot_boundary(model, X, Y, target, xlabel, ylabel):
+  cmap_dots = ListedColormap(["#1f77b4", "#ff7f0e", "#2ca02c"])
+  cmap_files = ListedColormap(["#c6dcec", "#ffdec2", "#cae7ca"])
+
+  plt.figure(figsize = (5, 5))
+
+  if model:
+    XX, YY = np.meshgrid(
+        np.linspace(X.min() - 1, X.max() + 1, 200),
+        np.linspace(Y.min() - 1, Y.max() + 1, 200)
+    )
+
+    pred = model.predict(np.c_[XX.ravel(), YY.ravel()])
+    pred = pred.reshape(XX.shape)
+
+    plt.pcolormesh(XX, YY, pred, cmap = cmap_files, shading = "auto")
+    plt.contour(XX, YY, pred, colors = "gray")
+
+  plt.scatter(X, Y, c = target, cmap = cmap_dots)
+  plt.xlabel(xlabel)
+  plt.ylabel(ylabel)
+  plt.show()
+
+import pandas as pd
+
+df = pd.DataFrame(x_test)
+pred = model.predict(df)
+plot_boundary(None, df[0], df[1], pred, "df[0]", "df[1]")
+
+plot_boundary(model, df[0], df[1], pred, "df[0]", "df[1]")
+
+from sklearn.datasets import make_moons
+
+X, y = make_moons(random_state = 3, noise = 0.1, n_samples = 300)
+df = pd.DataFrame(X)
+model = svm.SVC()
+model.fit(X, y)
+plot_boundary(model, df[0], df[1], y, "df[0]", "df[1]")
+
+from sklearn.datasets import make_circles
+
+X, y = make_circles(random_state = 3, noise = 0.1, n_samples = 300)
+df = pd.DataFrame(X)
+model = svm.SVC()
+model.fit(X, y)
+plot_boundary(model, df[0], df[1], y, "df[0]", "df[1]")
