@@ -3,3 +3,8 @@
 **/.ipynb_checkpoints/
 **/mnist_and_hand_digits/**/data/
 **/cnn_comparisons/data/
+**/celeb/data/
+**/celeb/densenet201_finetuning.pth
+**/celeb/densenet201_transfer_learning.pth
+**/celeb/vgg19_bn_finetuning.pth
+**/celeb/vgg19_bn_transfer_learning.pth
